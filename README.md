@@ -90,10 +90,3 @@ This project demonstrates the practical application of **Artificial Intelligence
 
 ---
 
-If you want, I can also:
-
-* Shorten this to a **one-page evaluator version**
-* Write a **project abstract**
-* Prepare **viva questions & answers**
-
-Just tell me.
