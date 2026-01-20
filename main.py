@@ -1,15 +1,27 @@
 import streamlit as st
 import google.generativeai as genai
-import os
-
-# Gemini configuration
-genai.configure(api_key="")
-model = genai.GenerativeModel("models/gemini-1.5-flash")
 
 st.set_page_config(page_title="SmartFit-Student AI", layout="centered")
 
 st.title("🎓 SmartFit-Student")
 st.caption("Constraint-Aware Explainable AI Fitness Planner for Students")
+
+api_key = st.sidebar.text_input("Gemini API Key", type="password")
+
+model = None
+
+if api_key:
+    genai.configure(api_key=api_key)
+
+    models = [
+        m.name for m in genai.list_models()
+        if "generateContent" in m.supported_generation_methods
+    ]
+
+    if models:
+        model = genai.GenerativeModel(models[0])
+    else:
+        st.error("No compatible Gemini models available for this API key.")
 
 st.markdown("### 👤 Student Profile")
 age = st.number_input("Age", 16, 40)
@@ -27,44 +39,43 @@ food_source = st.selectbox("Primary Food Source", ["Hostel Mess", "Home Food", "
 budget = st.selectbox("Food Budget", ["Low", "Medium"])
 
 if st.button("Generate Smart Plan"):
-    prompt = f"""
-    You are an AI fitness system designed specifically for Indian college students.
+    if not api_key:
+        st.error("Please enter your Gemini API key.")
+    elif not model:
+        st.error("No usable Gemini model found for your API key.")
+    else:
+        prompt = f"""
+You are an AI fitness system designed specifically for Indian college students.
 
-    Student Profile:
-    Age: {age}
-    Weight: {weight} kg
+Student Profile:
+Age: {age}
+Weight: {weight} kg
 
-    Constraints:
-    - Fitness Goal: {goal}
-    - Academic Phase: {academic_load}
-    - Available Time: {time_available}
-    - Equipment: {equipment}
-    - Diet: {diet}
-    - Food Source: {food_source}
-    - Budget: {budget}
+Constraints:
+- Fitness Goal: {goal}
+- Academic Phase: {academic_load}
+- Available Time: {time_available}
+- Equipment: {equipment}
+- Diet: {diet}
+- Food Source: {food_source}
+- Budget: {budget}
 
-    Generate a plan with the following structure:
+Generate:
+1. Personalized Workout Plan
+2. Practical Meal Strategy
+3. Explanation
+4. Fallback Plan
+5. 3 Micro-Habits
 
-    1. Personalized Workout Plan (respecting time & academic load)
-    2. Practical Meal Strategy (based on food source)
-    3. Explanation Section:
-       - Why this workout intensity was chosen
-       - Why these food choices make sense
-    4. Fallback Plan:
-       - If workout is skipped
-       - If meals go off-plan
-    5. 3 Micro-Habits for consistency
+Rules:
+- No supplements
+- Student-friendly
+- Realistic
+- No gym jargon
+"""
 
-    Rules:
-    - No supplements
-    - Student-friendly language
-    - Realistic, not idealistic
-    - Avoid gym jargon
-    """
+        with st.spinner("Thinking like a student-friendly AI..."):
+            response = model.generate_content(prompt)
 
-    with st.spinner("Thinking like a student-friendly AI..."):
-        response = model.generate_content(prompt)
-
-    st.subheader("📘 Your SmartFit Plan")
-    st.write(response.text)
-
+        st.subheader("📘 Your SmartFit Plan")
+        st.write(response.text)
