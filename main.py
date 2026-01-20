@@ -3,7 +3,7 @@ import google.generativeai as genai
 import os
 
 # Gemini configuration
-genai.configure(api_key="AIzaSyBCIymWozMHX-IwT4ulitEkYerDQ2YI6Mk")
+genai.configure(api_key="")
 model = genai.GenerativeModel("models/gemini-1.5-flash")
 
 st.set_page_config(page_title="SmartFit-Student AI", layout="centered")
@@ -67,3 +67,4 @@ if st.button("Generate Smart Plan"):
 
     st.subheader("📘 Your SmartFit Plan")
     st.write(response.text)
+
