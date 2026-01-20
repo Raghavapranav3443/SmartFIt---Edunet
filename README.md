@@ -4,6 +4,8 @@
 
 SmartFit-Student is a **constraint-aware, explainable AI fitness planner** designed specifically for college students. Unlike generic fitness apps, it adapts workout and meal plans based on **academic workload, time availability, food access, budget, and equipment**, ensuring realism and consistency.
 
+Check Out the Project Here : https://smartfit-student.streamlit.app/
+
 ---
 
 ## 🚀 Key Highlights
